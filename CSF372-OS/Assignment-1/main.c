@@ -1,174 +1,181 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <errno.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <pthread.h>
-             
-int N;
-int check = 0;
-typedef struct
-{
-    int x, y;
-} pair;
-pthread_mutex_t lock;
-int xMove[8] = {2, 1, -1, -2, -2, -1, 1, 2};
-int yMove[8] = {1, 2, 2, 1, -1, -2, -2, -1};
-int deg[8];
- 
-void print_path(pair path[], int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        printf("%d,%d|", path[i].x, path[i].y);
-    }
-}
- 
-int limits(int x, int y, int n)
-{
-    return x >= 0 && y >= 0 && x < n && y < n;
-}
-             
-int accesibility(int x, int y,int** visited)
-{
-    int cnt = 0;
-    for (int i = 0; i < 8; i++)
-    {
-        int nextX = x + xMove[i];
-        int nextY = y + yMove[i];
-        if (limits(nextX, nextY, N) && !visited[nextX][nextY])
-            cnt++;
-    }
-    return cnt;
-}
-           
-int isdead(int x, int y,int** visited)
-{
-    for (int i = 0; i < 8; ++i)
-    {
-        int nx = x + xMove[i];
-        int ny = y + yMove[i];
-        if (limits(nx, ny, N) && !visited[nx][ny])
-        {
-            return 0;
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <unistd.h>
+    #include <sys/wait.h>
+    #include <sys/types.h>
+    #include <errno.h>
+    #include <sys/ipc.h>
+    #include <sys/shm.h>
+    #include <pthread.h>
+    #include <time.h>
+     
+    int i,j,k;
+    int** Matrix_A;
+    int** Matrix_B;
+    int** Matrix_C;
+    
+    int nod(int w){
+        int cnt = 0;
+        int ff = w;
+        while(ff){
+            ff /= 10;
+            cnt ++ ;
         }
+        return cnt;
     }
-    return 1;
-}
- 
-void tour(int x, int y,int** visited,int p,pair* path)
-{
-    visited[x][y] = 1;
-    pair cell = {x, y};
-    path[p] = cell;
-    int nx = x;
-    int ny = y;
-    int mini = 8;
-    int deadEnd = isdead(x, y,visited);
-    if (deadEnd == 1)
+    int** read_matrix_from_file(int rows,int cols,char* filename)
     {
-        int f = 1;
-        for (int i = 0; i < N; i++)
+        clock_t start = clock();
+        int** matrix = (int**)malloc(rows*sizeof(int*));
+        for(int a = 0; a < rows; a++)
         {
-            for (int j = 0; j < N; j++)
+            matrix[a] = (int*)malloc(cols*sizeof(int));
+        }
+        
+        FILE *fp;
+        fp = fopen(filename,"r");
+        if(fp == NULL) exit(-1);
+        for(int a = 0; a < i; a++)
+        {
+            for(int b = 0; b < j; b++)
             {
-                if (visited[i][j] == 0)
-                {
-                    f = 0;
-                    break;
+                fscanf(fp,"%d",&matrix[a][b]);
+            }
+        }
+        clock_t end = clock();
+        double exec_time = ((double)(end - start))/CLOCKS_PER_SEC;
+        // printf("%f\n",exec_time);
+        return matrix;
+    }
+    void* runner(void* args){
+ 
+        int mat = *((int*)(args + 0*sizeof(int)));
+        int st = *((int*)(args + 1*sizeof(int)));
+        int c = *((int*)(args + 2*sizeof(int)));
+        int id = *((int*)(args + 3*sizeof(int)));
+        printf("mat = %d , st = %d and c = %d and thread id = %d\n",mat,st,c,id);
+        FILE* fp = fopen("in1.txt","r");
+        FILE* fp1 = fopen("in2.txt","r");
+        int s = 0;
+        fseek(fp,st,SEEK_SET);
+ 
+        if(mat == 0){
+            while(c--){
+                int y;
+                fscanf(fp,"%d",&y);
+                if(id < 3){
+                   printf("%d\n",y); 
+                }
+                
+     
+            }
+     
+        }else{
+     
+        }
+ 
+    }
+     
+    int main(int argc, char *argv[])
+    {
+        if (argc != 7)
+        {
+            printf("Insufficient Arguments");
+            exit(-1);
+        }
+        i = atoi(argv[1]);
+        j = atoi(argv[2]);
+        k = atoi(argv[3]);
+        int cnt = i*j + j*k;
+        int f1 = i*j;
+        int f2 = j*k;
+        // printf("i = %d , j = %d and k=%d",i,j,k);
+        
+        for(int t=4;t <= 4;++t)
+        {
+            // printf("f1 = %d , t=%d and cnt = %d",f,t,cnt);
+            int n1 = 3;
+            int n2 = t - n1 ;
+            pthread_t tid[t];
+            
+            int start[t];
+            for(int h=0;h<t;++h){
+                start[h] = 0;
+            }
+            int count[t];
+             for(int h=0;h<t;++h){
+                count[h] = 0;
+            }
+            
+            int k1 = i*j;
+            int k2 = n1;
+            int k3 = k1/k2 ;
+            int k4 = k1%k2 ;
+            
+            for(int e = 0;e<n1;e++){
+                count[e] = k3;
+            }
+            count[n1-1] += k4 ;
+            
+            k1 = j*k;
+            k2 = n2;
+            k3 = k1/k2;
+            k4 = k1%k2;
+            
+            for(int e=n1;e<t;++e){
+                count[e] = k3;
+                
+            }
+            count[t-1] += k4;
+            
+            FILE* gg= fopen("in1.txt","r");
+ 
+            // FILE* lmao = fopen("in1.txt","r");
+            // fseek(lmao,12,SEEK_SET);
+            // char ch = fgetc(lmao);
+            // printf("Here -> %c\n",ch);
+ 
+ 
+            start[0] = 0;
+            for(int h = 0;h<n1;++h){
+                int w;
+                fscanf(gg,"%d",&w);
+                int ff = ftell(gg);
+                start[h] = ff - nod(w);
+                int temp = count[h] - 1;
+                
+                while(temp--){
+                    fscanf(gg,"%d",&w);
                 }
             }
-            if (!f)
-                break;
-        }
-        pthread_mutex_lock(&lock);
-        if (f && check == 0)
-        {
-            check = 1;
-            print_path(path,N*N);
-            pthread_mutex_unlock(&lock);
-            return;
-        }
-        pthread_mutex_unlock(&lock);
-        return;
-    }
-    int st = rand()%8; 
-    for(int i=0;i<8;++i)
-    {
-        int j = (st + i) % 8;
-        int nextX = x + xMove[j];
-        int nextY = y + yMove[j];
-        int curr = accesibility(nextX,nextY,visited);
-        if(limits(nextX,nextY,N) && !visited[nextX][nextY] && curr < mini)
-        {
-            mini = curr;
-            nx = nextX;
-            ny = nextY;
-        }
-    }
-             
-    p++;
-    tour(nx, ny,visited,p,path);
-}
+          
+            for(int h=0;h<t;++h){
+                // printf("%d\n",start[h]);
+                int* arr = (int*)(malloc(4*sizeof(int)));
+       
+                arr[0] = 0;
  
-void* solve(void* args)
-{
-    int **visited;
-    int StartX = *((int *)(args + 0 * sizeof(int)));
-    int StartY = *((int *)(args + 1 * sizeof(int)));
-    pair path1[N * N];
-    pair* path = path1;
-    int visited1[N][N];
-    int *rows[N];
-    for (int i = 0; i < N; i++)
-    {
-        rows[i] = visited1[i];
-    }
-    visited = rows;
-    for (int i = 0; i < N; i++)
-    {
-        for (int j = 0; j < N; j++)
-        {
-            visited[i][j] = 0;
-        }
-    }
-    visited[StartX][StartY] = 1;
-    tour(StartX, StartY,visited,0,path);
-}
+                // if(h >= n1){
+                //     arr[0] = 1;
+                // }
  
-int main(int argc, char *argv[])
-{
-    pthread_mutex_init(&lock,NULL);
-    if (argc != 4)
-    {
-        printf("Usage: ./Knight.out grid_size StartX StartY");
-        exit(-1);
-    }
-    N = atoi(argv[1]);
-    int x = atoi(argv[2]);
-    int y = atoi(argv[3]);
-    pthread_t threads[10];
-    int* arr = (int*)(malloc(2*sizeof(int)));
-    arr[0] = x;
-    arr[1] = y;
-    for(int i=0;i<10;++i)
-    {
-        int p=pthread_create(&threads[i],NULL,solve,(void*)arr);
-        if(p!=0)
-        {
-            printf("error: %d",i);
+                arr[1] = start[h];
+                arr[2] = count[h];
+                arr[3] = h;
+                // printf("%d %d %d %d\n",arr[0],arr[1],arr[2],arr[3]);
+                pthread_create(&tid[h],NULL,runner,(void*) arr);
+ 
+            }
+            for(int h=0;h<t;++h){
+                
+                pthread_join(tid[h],NULL);
+ 
+            }
+            
+            
+          
+            
         }
+        
+        
     }
-    for(int i=0;i<10;++i)
-    {
-        pthread_join(threads[i],NULL);
-    }
-    if(!check)
-    {
-        printf("No Possible Tour");
-    }
-    return 0;
-}
